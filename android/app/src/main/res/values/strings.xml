@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ark_odb_link</string>
+    <string name="title_activity_main">ark_odb_link</string>
+    <string name="package_name">com.rex.odblink</string>
+    <string name="custom_url_scheme">com.rex.odblink</string>
+</resources>

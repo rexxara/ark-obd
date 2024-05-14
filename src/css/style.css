@@ -1,0 +1,12 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#echoTest {
+  display: block;
+  width: 120px;
+  height: 80px;
+  margin: auto;
+}
