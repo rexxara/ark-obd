@@ -1,5 +1,5 @@
 import { SplashScreen } from '@capacitor/splash-screen';
-import echoTest from './plugins/echo';
+import echoTest from './service';
 import VConsole from 'vconsole';
 const vConsole = new VConsole();
 window.customElements.define(

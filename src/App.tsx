@@ -1,27 +1,17 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useEffect, useContext } from 'react'
 import VConsole from 'vconsole';
-import echoTest from './js/plugins/echo';
-import { Button } from 'antd';
+import Services from './Components/service'
+import Main from './Components/Tabs';
 const vConsole = new VConsole();
-
+import { GlobalContext } from "./Context/global";
 function App() {
-    const [count, setCount] = useState(0)
-
-    return (
-        <>
-            <div className="card">
-                <Button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </Button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <Button onClick={echoTest}>echoTest
-            </Button>
-        </>
-    )
+    const { dispatch } = useContext(GlobalContext);
+    useEffect(() => {
+        Services.getBleList().then(data => {
+            dispatch?.({ type: 'infoList', payload: data })
+        })
+    }, [])
+    return <Main />;
 }
 
 export default App

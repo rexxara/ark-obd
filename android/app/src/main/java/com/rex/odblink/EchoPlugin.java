@@ -28,19 +28,19 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressLint("MissingPermission")
 @CapacitorPlugin(name = "Echo")
 public class EchoPlugin extends Plugin {
 
     private BluetoothSocket socket = null;
 
-    @SuppressLint("MissingPermission")
     @PluginMethod()
-    public void init(PluginCall call) {
+    public void echo(PluginCall call) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         String deviceAddress = call.getString("deviceAddress");
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
         JSObject ret = new JSObject();
-        var rex = deviceAddress + "|";
+        var result = "";
         try {
             UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
             if(socket==null){
@@ -51,23 +51,42 @@ public class EchoPlugin extends Plugin {
             }
             var cmd = new EchoOffCommand();
             cmd.run(socket.getInputStream(), socket.getOutputStream());
-            rex += cmd.getResult();
-//            new LineFeedOffCommand().run(socket.getInputStream(), socket.getOutputStream());
-//            new TimeoutCommand(125).run(socket.getInputStream(), socket.getOutputStream());
-//            new SelectProtocolCommand(ObdProtocols.AUTO).run(socket.getInputStream(), socket.getOutputStream());
-//            new AmbientAirTemperatureCommand().run(socket.getInputStream(), socket.getOutputStream());
+            result += cmd.getResult();
         } catch (Exception e) {
-            rex+=e.getMessage();
-            // handle errors
+            result+=e.getMessage();
         } finally {
-            ret.put("value", rex);
+            ret.put("value", result);
             call.resolve(ret);
         }
     }
     @PluginMethod()
-    public void echo(PluginCall call) {
+    public void getRpm(PluginCall call) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        @SuppressLint("MissingPermission")
+        String deviceAddress = call.getString("deviceAddress");
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+        JSObject ret = new JSObject();
+        var result = "";
+        try {
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+            if(socket==null){
+                socket = device.createRfcommSocketToServiceRecord(uuid);
+            }
+            if(!socket.isConnected()){
+                socket.connect();
+            }
+            var cmd = new RPMCommand();
+            cmd.run(socket.getInputStream(), socket.getOutputStream());
+            result += cmd.getResult();
+        } catch (Exception e) {
+            result+=e.getMessage();
+        } finally {
+            ret.put("value", result);
+            call.resolve(ret);
+        }
+    }
+    @PluginMethod()
+    public void getBleList(PluginCall call) {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
 
         var connectedDevices = new ArrayList<BluetoothDevice>();
@@ -79,21 +98,16 @@ public class EchoPlugin extends Plugin {
         call.resolve(ret);
     }
 
-    @SuppressLint("MissingPermission")
     @NonNull
     private static JSObject getJsObject(ArrayList<BluetoothDevice> connectedDevices,
             BluetoothAdapter bluetoothAdapter) {
         JSObject ret = new JSObject();
         var deviceMap = new ArrayList<BLEDto>();
         for (BluetoothDevice device : connectedDevices) {
-            @SuppressLint("MissingPermission")
             String deviceName = device.getName();
             String deviceAddress = device.getAddress();
-            @SuppressLint("MissingPermission")
             int deviceState = device.getBondState();
-            @SuppressLint("MissingPermission")
             int type = device.getType();
-            @SuppressLint("MissingPermission")
             String alias = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                 alias = device.getAlias();

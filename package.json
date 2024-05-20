@@ -10,7 +10,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "runInAnd": "npm run build && npx cap sync && npx cap run android"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "^6.0.0",
@@ -18,9 +19,13 @@
     "@capacitor/camera": "latest",
     "@capacitor/core": "latest",
     "@capacitor/splash-screen": "latest",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.17",
     "antd": "^5.17.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "echarts": "^5.5.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "react-router-dom": "^6.23.1",
     "vconsole": "^3.15.1"
   },
