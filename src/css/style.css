@@ -13,12 +13,20 @@ body {
   margin: auto;
 }
 
-#echRoot {
-  width: 100vw;
-  height: 100vw;
-  background-color: #cacaca;
+#rpmChatRoot {
+  width: 45vw;
+  height: 80vh;
 }
 
 .full-width-tabpanel {
   padding: 0;
+}
+
+.dashBoardMain {
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../assets//imgs//111050228_p0.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: 50% 50%;
 }

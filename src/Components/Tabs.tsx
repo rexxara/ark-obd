@@ -64,9 +64,8 @@ export default function FullWidthTabs() {
                     variant="fullWidth"
                     aria-label="full width tabs example"
                 >
-                    <Tab label="BleList" {...a11yProps(0)} />
+                    <Tab label="蓝牙列表" {...a11yProps(0)} />
                     <Tab label="Current" {...a11yProps(1)} />
-                    <Tab label="Item Three" {...a11yProps(2)} />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -79,9 +78,6 @@ export default function FullWidthTabs() {
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                     <Current />
-                </TabPanel>
-                <TabPanel value={value} index={2} dir={theme.direction}>
-                    Item Three
                 </TabPanel>
             </SwipeableViews>
         </Box>

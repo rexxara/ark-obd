@@ -1,0 +1,12 @@
+.GlassContainer {
+    /* background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px); */
+    width: 90vw;
+    height: 85vh;
+    position: absolute;
+    left: 5vw;
+    top: 5vh;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 10px 10px 40px #884FA7;
+}

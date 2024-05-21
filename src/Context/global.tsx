@@ -1,13 +1,18 @@
 import React from 'react';
 
 export interface GlobalContextType {
+    type: "setting" | "main"
     infoList: BleInfo[],
     current: string;
-    rpmDataList: RPMData[]
+    rpmDataList: RPMData[],
+    heartBeatGap: number
 }
 export interface RPMData {
     value: number,
-    date: number
+    date: {
+        seconds: number;
+        minutes: number;
+    }
 }
 export interface BleInfo {
     Name: string;
@@ -19,7 +24,9 @@ export interface BleInfo {
 export const GlobalContextDefaultValue: GlobalContextType = {
     infoList: [],
     current: "OBDII",
-    rpmDataList: []
+    rpmDataList: [],
+    type: 'main',
+    heartBeatGap: 400
 };
 export const GlobalContext = React.createContext<{
     context: GlobalContextType;
