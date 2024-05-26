@@ -49,7 +49,8 @@ export default class Services {
 
         }
         const requsetResult = await Echo.heartBeat({ deviceAddress: location, toRequsetList });
-        const { RPM, SPEED } = requsetResult;
+        console.log(requsetResult)
+        const { RPM, SPEED, VIN } = requsetResult;
         const res: Partial<{ [key in CommandType]: any }> = {};
         if (RPM) {
             if (RPM.indexOf('410C') === 0 || RPM.indexOf('010C410C') === 0) {
@@ -68,6 +69,9 @@ export default class Services {
                 const decimalNumber = parseInt(x16Value, 16);
                 res[CommandType.SPEED] = decimalNumber;
             }
+        }
+        if (VIN) {
+            res[CommandType.VIN] = VIN;
         }
         return res;
     }
