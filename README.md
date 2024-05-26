@@ -1,3 +1,5 @@
+# next
+尽量多的获取数据，不关注ui
 # how to run
 npm run build&&npx cap sync&&npx cap run android
 

@@ -1,10 +1,9 @@
 import React, { useContext, useRef } from "react";
-import { GlobalContext, RPMData } from "../../Context/global";
+import { GlobalContext } from "../../Context/global";
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { message } from 'antd';
 import Services from "../service";
-import Echart from '../RPMChart';
 interface IProps {
 
 }
@@ -19,6 +18,7 @@ export default function Current(props: IProps) {
         <ButtonGroup variant="contained" aria-label="Basic button group">
             <Button onClick={reload}>reload</Button>
             <Button onClick={echo}>Echo</Button>
+            <Button onClick={disConnect}>DisConnet</Button>
             {/* <Button onClick={addTimer}>Start</Button>
             <Button onClick={removeTimer}>Stop</Button> */}
         </ButtonGroup>
@@ -28,6 +28,11 @@ export default function Current(props: IProps) {
             const value = await Services.echo(currentItem.Location)
             message.success(value)
         }
+    }
+    function disConnect() {
+        Services.disconnect().then(data => {
+            message.success(JSON.stringify(data))
+        })
     }
     function reload() {
         Services.getBleList().then(data => {

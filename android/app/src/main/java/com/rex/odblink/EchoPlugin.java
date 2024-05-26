@@ -16,6 +16,8 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.control.VinCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
@@ -24,6 +26,8 @@ import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.enums.ObdProtocols;
 
+import org.json.JSONException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -43,24 +47,100 @@ public class EchoPlugin extends Plugin {
         var result = "";
         try {
             UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            if(socket==null){
+            if (socket == null) {
                 socket = device.createRfcommSocketToServiceRecord(uuid);
             }
-            if(!socket.isConnected()){
+            if (!socket.isConnected()) {
                 socket.connect();
             }
             var cmd = new EchoOffCommand();
             cmd.run(socket.getInputStream(), socket.getOutputStream());
             result += cmd.getResult();
         } catch (Exception e) {
-            result+=e.getMessage();
+            result += e.getMessage();
         } finally {
             ret.put("value", result);
             call.resolve(ret);
         }
     }
+
     @PluginMethod()
-    public void getRpm(PluginCall call) {
+    public void heartBeat(PluginCall call) throws JSONException {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        String deviceAddress = call.getString("deviceAddress");
+        var requsetList = call.getArray("toRequsetList").toList();
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+        JSObject returnValue = new JSObject();
+
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        if (socket == null) {
+            try {
+                socket = device.createRfcommSocketToServiceRecord(uuid);
+            } catch (IOException e) {
+                System.out.println(e.toString());
+            }
+        }
+        if (!socket.isConnected()) {
+            try {
+                socket.connect();
+            } catch (IOException e) {
+                System.out.println(e.toString());
+            }
+        }
+        for (var requset : requsetList) {
+            var requsetKey = requset.toString();
+            if (requsetKey.equals(CommandType.RPM.getValue())) {
+                getRpm(returnValue);
+            } else if (requsetKey.equals(CommandType.SPEED.getValue())) {
+                getSpeed(returnValue);
+            } else if (requsetKey.equals(CommandType.VIN.getValue())) {
+                getVin(returnValue);
+            }
+        }
+        call.resolve(returnValue);
+    }
+
+    private void getVin(JSObject ret) {
+        var result = "";
+        try {
+            var cmd = new VinCommand();
+            cmd.run(socket.getInputStream(), socket.getOutputStream());
+            result += cmd.getResult();
+        } catch (Exception e) {
+            result += e.getMessage();
+        } finally {
+            ret.put(CommandType.VIN.getValue(), result);
+        }
+    }
+
+    private void getSpeed(JSObject ret) {
+        var result = "";
+        try {
+            var cmd = new SpeedCommand();
+            cmd.run(socket.getInputStream(), socket.getOutputStream());
+            result += cmd.getResult();
+        } catch (Exception e) {
+            result += e.getMessage();
+        } finally {
+            ret.put(CommandType.SPEED.getValue(), result);
+        }
+    }
+
+    private void getRpm(JSObject ret) {
+        var result = "";
+        try {
+            var cmd = new RPMCommand();
+            cmd.run(socket.getInputStream(), socket.getOutputStream());
+            result += cmd.getResult();
+        } catch (Exception e) {
+            result += e.getMessage();
+        } finally {
+            ret.put(CommandType.RPM.getValue(), result);
+        }
+    }
+
+    @PluginMethod()
+    public void Old_heartBeat(PluginCall call) throws JSONException {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         String deviceAddress = call.getString("deviceAddress");
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
@@ -68,22 +148,30 @@ public class EchoPlugin extends Plugin {
         var result = "";
         try {
             UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            if(socket==null){
+            if (socket == null) {
                 socket = device.createRfcommSocketToServiceRecord(uuid);
             }
-            if(!socket.isConnected()){
+            if (!socket.isConnected()) {
                 socket.connect();
             }
             var cmd = new RPMCommand();
             cmd.run(socket.getInputStream(), socket.getOutputStream());
             result += cmd.getResult();
         } catch (Exception e) {
-            result+=e.getMessage();
+            result += e.getMessage();
         } finally {
             ret.put("value", result);
             call.resolve(ret);
         }
     }
+
+    @PluginMethod()
+    public void disconnect(PluginCall call) throws IOException {
+        if (socket.isConnected()) {
+            socket.close();
+        }
+    }
+
     @PluginMethod()
     public void getBleList(PluginCall call) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

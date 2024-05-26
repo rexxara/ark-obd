@@ -1,13 +1,25 @@
 import React from 'react';
+import { CommandType } from './Model';
 
 export interface GlobalContextType {
     type: "setting" | "main"
     infoList: BleInfo[],
     current: string;
-    rpmDataList: RPMData[],
-    heartBeatGap: number
+    rpmDataList: RPMOrSpeedData[],
+    speedDataList: RPMOrSpeedData[],
+    requestTimerMap: TimerMap,
+    lastUpdateMap: TimerMap,
+    timeFrameGap: number,
+    carInfo: {
+        vin: string;
+    }
 }
-export interface RPMData {
+export interface TimerMap {
+    [CommandType.RPM]: number,
+    [CommandType.SPEED]: number,
+    [CommandType.VIN]: number,
+}
+export interface RPMOrSpeedData {
     value: number,
     date: {
         seconds: number;
@@ -26,7 +38,21 @@ export const GlobalContextDefaultValue: GlobalContextType = {
     current: "OBDII",
     rpmDataList: [],
     type: 'main',
-    heartBeatGap: 400
+    timeFrameGap: 200,
+    requestTimerMap: {
+        [CommandType.RPM]: 400,
+        [CommandType.SPEED]: 400,
+        [CommandType.VIN]: 1000 * 60 * 60 * 24 * 30, //30day
+    },
+    lastUpdateMap: {
+        [CommandType.RPM]: 0,
+        [CommandType.SPEED]: 0,
+        [CommandType.VIN]: 0,
+    },
+    carInfo: {
+        vin: ''
+    },
+    speedDataList: []
 };
 export const GlobalContext = React.createContext<{
     context: GlobalContextType;

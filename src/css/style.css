@@ -15,7 +15,12 @@ body {
 
 #rpmChatRoot {
   width: 45vw;
-  height: 80vh;
+  height: 73vh;
+}
+
+#speedChatRoot {
+  width: 45vw;
+  height: 73vh;
 }
 
 .full-width-tabpanel {

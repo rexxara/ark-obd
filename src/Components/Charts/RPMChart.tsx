@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { GlobalContext } from "../Context/global";
+import { GlobalContext } from "../../Context/global";
 import * as echarts from 'echarts';
-import { FieldTimeOutlined, RedoOutlined } from "@ant-design/icons";
+import { RedoOutlined } from "@ant-design/icons";
 interface IProps {
 
 }
@@ -30,7 +30,7 @@ export default function RPMChart(props: IProps) {
             series: [
                 {
                     data: [],
-                    type: 'line',
+                    type: 'bar',
                     areaStyle: {},
                     smooth: true,
                     lineStyle: {
@@ -63,11 +63,11 @@ export default function RPMChart(props: IProps) {
         }
     }, [context.rpmDataList])
     const lastItem = context.rpmDataList[context.rpmDataList.length - 1];
-    return <>
+    return <div>
         <div style={{ width: '45vw', display: 'flex', justifyContent: 'space-between', alignItems: "center" }}>
-            <h2><FieldTimeOutlined />:{lastItem && (lastItem.date.minutes + "m" + lastItem.date.seconds + "s")}</h2>
+            <h2></h2>
             <h2><RedoOutlined />:{lastItem && lastItem.value}r/min</h2>
         </div>
         <div id="rpmChatRoot"></div>
-    </>
+    </div>
 }
